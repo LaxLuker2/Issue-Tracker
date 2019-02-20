@@ -1,11 +1,11 @@
 {
-  "name": "http-api-assignment-ii",
+  "name": "issue-tracker",
   "version": "1.0.0",
   "engines": {
     "node": "10.14.1",
     "npm": "6.4.1"
   },
-  "description": "http api assignment 2 HW",
+  "description": "Issue Tracker API Project 1 for RM2",
   "main": "./src/server.js",
   "scripts": {
     "start": "node ./src/server.js",
@@ -28,5 +28,10 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.16.0",
     "nodemon": "^1.18.10"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LaxLuker2/Issue-Tracker.git"
   }
 }

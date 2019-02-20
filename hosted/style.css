@@ -28,5 +28,30 @@ h2 {
 
 section {
   width: 80%;
+  max-width: 1000px;
   margin: 0 auto;
+}
+
+.table {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+}
+.table td,
+.table th {
+  min-width: 7vw;
+  padding: 5px 10px;
+  text-align: center;
+}
+.table th {
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.table .first-col {
+  text-align: left;
+}
+
+.table .full-width-row {
+  width: 100%;
 }

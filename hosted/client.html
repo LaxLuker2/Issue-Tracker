@@ -82,7 +82,7 @@
         }
       };
 
-      const requestGETHEADUpdate = (e, userForm) => {
+      const requestGETHEADUpdate = (e) => {
         //check if userForm.id is equal to userForm or nameForm for setting correct values
 
         const url = userForm.querySelector("#urlField").value;
@@ -163,13 +163,13 @@
         //add event listener
         addIssueForm.addEventListener("submit", addIssues);
 
-        const userForm = document.querySelector("#userForm");
+        const getIssues = document.querySelector("#getIssues");
 
         //function to handle our request
-        const getUsers = e => requestGETHEADUpdate(e, userForm);
+        const getIssues = e => requestGETHEADUpdate(e);
 
         //add event listener
-        userForm.addEventListener("submit", getUsers);
+        getIssues.addEventListener("onclick", getUsers);
       };
 
       window.onload = init;
@@ -191,9 +191,15 @@
             <input id="nameField" type="text" name="name" />
             <!-- <input type="submit" value="Add User" /> -->
           </form>
-          <hr />
           <div>
-            List all issues
+            <br>
+            <button class="btn btn-primary" id="getIssues">Show Issue</button>
+            <table id="issue-table" class="table" cellspacing="0" cellpadding="0">
+              <tr>
+                <th>Issue</th>
+                <th>Author</th>
+              </tr>
+            </table>
           </div>
         </div>
       </div>

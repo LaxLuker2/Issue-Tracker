@@ -48,7 +48,7 @@ section {
   text-align: center;
 }
 
-.table .first-col {
+.table #first-col {
   text-align: left;
 }
 

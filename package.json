@@ -5,31 +5,22 @@
     "node": "10.14.1",
     "npm": "6.4.1"
   },
-  "description": "Issue Tracker API Project 1 for RM2",
+  "description": "Issue Tracker API Project 1 Rich Media 2",
   "main": "./src/server.js",
   "scripts": {
     "start": "node ./src/server.js",
     "pretest": "eslint ./src --fix",
     "test": "echo \"Test complete\"",
-    "nodemon": "nodemon -e * --watch ./src --watch ./hosted ./src/server.js"
+    "nodemon": "nodemon -e js,html,css --watch ./src --watch ./hosted ./src/server.js"
   },
   "author": "Luke Schwarting",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/LaxLuker2/http-api-assignment-ii/issues"
-  },
-  "homepage": "https://github.com/LaxLuker2/http-api-assignment-ii#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "eslint": "^5.13.0",
+    "eslint": "^5.14.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.16.0",
     "nodemon": "^1.18.10"
-  },
-  "dependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/LaxLuker2/Issue-Tracker.git"
   }
 }

@@ -11,6 +11,7 @@
     />
     <link rel="stylesheet" type="text/css" href="/style.css" />
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
     <script type="text/babel">
       const handleResponse = (xhr, parseResponse) => {
@@ -163,7 +164,15 @@
         //add event listener
         addIssueForm.addEventListener("submit", addIssues);
 
-        //const getIssues = document.querySelector("#getIssues");
+        //reply btns
+        const commentBtn = document.querySelector("#replyBtn");
+        $("#replyBtn").click(function() {
+          if ($("#comment").css("display") == "none") {
+            $("#comment").show();
+          } else {
+            $("#comment").hide();
+          }
+        });
 
         //function to handle our request
         //const getIssues = e => requestGETHEADUpdate(e);
@@ -206,12 +215,21 @@
                 <th>Date</th>
               </tr>
               <tr>
-                <th>Bootstrp Style overwritting my own style</th>
-                <th>Luke Schwarting</th>
-                <th>02/19/2015</th>
-                <th>
-                  <button>Edit</button>
-                </th>
+                <td>Bootstrp Style overwritting my own style</td>
+                <td>Luke Schwarting</td>
+                <td>02/19/2015</td>
+                <td>
+                  <button id="replyBtn">Reply</button>
+                </td>
+              </tr>
+              <tr id="comment">
+                <td>
+                  Make local style sheet link tag be after the bootstrap link
+                  tag to the css
+                </td>
+                <td>Brady Sweeney</td>
+                <td>02/20/2015</td>
+                <td></td>
               </tr>
             </table>
           </div>

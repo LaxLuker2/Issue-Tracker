@@ -26,7 +26,35 @@
           if (obj.message) {
             Message = `Message: ${obj.message}`;
           } else {
-            Message = `${JSON.stringify(obj.users)}`;
+            //Message = `${JSON.stringify(obj.issues)}`;
+            $("#issue-table tr.api").remove();
+            $.getJSON("http://localhost:3000/getIssues").done(function(json) {
+              console.log("json");
+              console.log(json);
+              $.each(json.issues, function(i, item) {
+                console.log("each");
+                console.log(item);
+                $("<tr>")
+                  .attr("id", "row-" + i)
+                  .attr("class", "api")
+                  .appendTo("#issue-table");
+                $("<td>")
+                  .appendTo("#row-" + i)
+                  .attr("class", "first-col")
+                  .text(item.issue);
+                $("<td>")
+                  .appendTo("#row-" + i)
+                  .text(item.name);
+                $("<td>")
+                  .appendTo("#row-" + i)
+                  .text(item.id);
+                $("<td>")
+                  .appendTo("#row-" + i)
+                  .attr("id", "replyBtn")
+                  .html("<button>Reply</button>");
+              });
+              Message = json;
+            });
           }
         } else {
           //head
@@ -35,19 +63,23 @@
 
         switch (xhr.status) {
           case 200:
+            status = 200;
             content.innerHTML = `<b>Success</b>`;
             content.innerHTML += `<br>`;
             content.innerHTML += `<p>${Message}</p>`;
             break;
           case 201:
+            status = 201;
             content.innerHTML = `<b>Create</b>`;
             content.innerHTML += `<br>`;
             content.innerHTML += `<p>${Message}</p>`;
             break;
           case 204:
+            status = 204;
             content.innerHTML = `<b>Updated (No Content)</b>`;
             break;
           case 400:
+            status = 400;
             content.innerHTML = `<b>Bad Request</b>`;
             content.innerHTML += `<br>`;
             content.innerHTML += `<p>${Message}</p>`;
@@ -63,6 +95,7 @@
             content.innerHTML += `<p>${Message}</p>`;
             break;
           case 404:
+            status = 404;
             content.innerHTML = `<b>Resource Not Found</b>`;
             content.innerHTML += `<br>`;
             content.innerHTML += `<p>${Message}</p>`;
@@ -86,8 +119,8 @@
       const requestGETHEADUpdate = e => {
         //check if userForm.id is equal to userForm or nameForm for setting correct values
 
-        const url = userForm.querySelector("#urlField").value;
-        const method = userForm.querySelector("#methodSelect").value;
+        const url = "/getIssues"; //userForm.querySelector("#urlField").value;
+        const method = "get"; //userForm.querySelector("#methodSelect").value;
 
         const xhr = new XMLHttpRequest();
         xhr.open(method, url);
@@ -150,6 +183,11 @@
 
         //prevent the browser's default action (to send the form on its own)
         e.preventDefault();
+        console.log("xhr.status" + status);
+        if (xhr.status === 200) {
+          requestGETHEADUpdate(e);
+        }
+
         //return false to prevent the browser from trying to change page
         return false;
       };
@@ -193,7 +231,7 @@
           <!-- <button class="btn btn-primary">Add Issue</button> -->
           <!-- <input type="submit" value="Add Issue" class="btn btn-primary" /> -->
           <!-- <br /> -->
-          <form id="addIssueForm" action="/addUser" method="post">
+          <form id="addIssueForm" action="/addIssue" method="post">
             <input type="submit" value="Add Issue" class="btn btn-primary" />
             <label for="issue">Issue: </label>
             <input id="issueField" type="text" name="issue" />
@@ -201,8 +239,9 @@
             <input id="nameField" type="text" name="name" />
             <!-- <input type="submit" value="Add User" /> -->
           </form>
-          <div>
+          <div id="issues-container">
             <br />
+            <!-- <ul id="issuesList"></ul> -->
             <table
               id="issue-table"
               class="table"
@@ -212,24 +251,29 @@
               <tr id="first-col">
                 <th>Issue</th>
                 <th>Author</th>
-                <th>Date</th>
+                <th>ID</th>
               </tr>
               <tr>
                 <td>Bootstrp Style overwritting my own style</td>
                 <td>Luke Schwarting</td>
-                <td>02/19/2015</td>
+                <td>LALALALA</td>
                 <td>
                   <button id="replyBtn">Reply</button>
                 </td>
               </tr>
-              <tr id="comment">
+              <!-- <tr id="comment">
                 <td>
                   Make local style sheet link tag be after the bootstrap link
                   tag to the css
                 </td>
                 <td>Brady Sweeney</td>
-                <td>02/20/2015</td>
+                <td>LALALA2</td>
                 <td></td>
+              </tr> -->
+              <tr id="comment">
+                <td>
+                  <textarea name="" id="" cols="45" rows="3"></textarea>
+                </td>
               </tr>
             </table>
           </div>

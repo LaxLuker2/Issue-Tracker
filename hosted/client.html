@@ -28,31 +28,30 @@
           } else {
             //Message = `${JSON.stringify(obj.issues)}`;
             $("#issue-table tr.api").remove();
-            $.getJSON("http://localhost:3000/getIssues").done(function(json) {
-              console.log("json");
-              console.log(json);
-              $.each(json.issues, function(i, item) {
-                console.log("each");
-                console.log(item);
-                $("<tr>")
-                  .attr("id", "row-" + i)
-                  .attr("class", "api")
-                  .appendTo("#issue-table");
-                $("<td>")
-                  .appendTo("#row-" + i)
-                  .attr("class", "first-col")
-                  .text(item.issue);
-                $("<td>")
-                  .appendTo("#row-" + i)
-                  .text(item.name);
-                $("<td>")
-                  .appendTo("#row-" + i)
-                  .text(item.id);
-                $("<td>")
-                  .appendTo("#row-" + i)
-                  .attr("id", "replyBtn")
-                  .html("<button>Reply</button>");
-              });
+
+            console.log("each");
+            console.log(obj);
+            $.each(obj.issues, function(i, item) {
+              console.log("each");
+              console.log(item);
+              $("<tr>")
+                .attr("id", "row-" + i)
+                .attr("class", "api")
+                .appendTo("#issue-table");
+              $("<td>")
+                .appendTo("#row-" + i)
+                .attr("class", "first-col")
+                .text(item.issue);
+              $("<td>")
+                .appendTo("#row-" + i)
+                .text(item.name);
+              $("<td>")
+                .appendTo("#row-" + i)
+                .text(item.id);
+              $("<td>")
+                .appendTo("#row-" + i)
+                .attr("id", "replyBtn")
+                .html("<button>Reply</button>");
               Message = json;
             });
           }
@@ -183,11 +182,12 @@
 
         //prevent the browser's default action (to send the form on its own)
         e.preventDefault();
-        console.log("xhr.status" + status);
-        if (xhr.status === 200) {
-          requestGETHEADUpdate(e);
-        }
 
+        //how to tell if post went through if so then do the get
+        console.log(xhr.status);
+        //if (xhr.status === 200) {
+        requestGETHEADUpdate(e);
+        //}
         //return false to prevent the browser from trying to change page
         return false;
       };
@@ -273,6 +273,9 @@
               <tr id="comment">
                 <td>
                   <textarea name="" id="" cols="45" rows="3"></textarea>
+                </td>
+                <td>
+                  <button id="postCommentBtn">Post</button>
                 </td>
               </tr>
             </table>

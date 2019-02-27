@@ -52,7 +52,8 @@ const getIssuesMeta = (request, response) =>
 const addIssue = (request, response, body) => {
   // default json message
   const responseJSON = {
-    message: "Issue and name are both required"
+    message: "Issue and name are both required",
+    shouldReload: "false"
   };
 
   // check to make sure we have both fields
@@ -88,6 +89,7 @@ const addIssue = (request, response, body) => {
   // and sent response with a message
   if (responseCode === 201) {
     responseJSON.message = "Created Successfully";
+    responseJSON.shouldReload = "true";
     const responseAddIssuesString = JSON.stringify(responseJSON);
     return respondJSON(
       request,

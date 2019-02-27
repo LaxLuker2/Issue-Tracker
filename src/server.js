@@ -36,6 +36,9 @@ const onRequest = (request, response) => {
       } else if (parsedUrl.pathname === "/style.css") {
         // if stylesheet, send stylesheet
         htmlHandler.getCSS(request, response);
+      } else if (parsedUrl.pathname === "/editIssue.html") {
+        // if stylesheet, send stylesheet
+        htmlHandler.getEditIssuePage(request, response);
       } else if (parsedUrl.pathname === "/getIssues") {
         // if get users, send user object back
         jsonHandler.getIssues(request, response);

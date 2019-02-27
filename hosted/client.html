@@ -14,14 +14,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
     <script type="text/babel">
+      var addIssueForm;
+      
       const handleResponse = (xhr, parseResponse) => {
         const content = document.querySelector("#content");
         var Message = "";
+        let obj;
 
         //see if the response from the request returened anything meaning has a body or not
         if (xhr.response) {
           //if set to application/json === true if text/xml === false
-          const obj = JSON.parse(xhr.response);
+          obj = JSON.parse(xhr.response);
           console.dir(obj);
           if (obj.message) {
             Message = `Message: ${obj.message}`;
@@ -52,12 +55,27 @@
                 .appendTo("#row-" + i)
                 .attr("id", "replyBtn")
                 .html("<button>Reply</button>");
-              Message = json;
+              Message = obj;
             });
           }
         } else {
           //head
           console.log("recieved");
+        }
+
+        //if method is post\
+
+        if (obj) {
+          if (obj.shouldReload === "true") {
+            switch (xhr.status) {
+              case 201:
+                requestGETHEADUpdate(addIssueForm, false);
+                break;
+              default:
+                content.innerHTML = `<p>Error code not implemented by client</p>`;
+                break;
+            }
+          }
         }
 
         switch (xhr.status) {
@@ -115,7 +133,7 @@
         }
       };
 
-      const requestGETHEADUpdate = e => {
+      const requestGETHEADUpdate = (sentFromEvent) => {
         //check if userForm.id is equal to userForm or nameForm for setting correct values
 
         const url = "/getIssues"; //userForm.querySelector("#urlField").value;
@@ -134,19 +152,21 @@
 
         xhr.send();
 
-        e.preventDefault();
+        if (sentFromEvent) {
+          //e.preventDefault();
+        }
         return false;
       };
 
-      const requestPOSTUpdate = (e, addIssueForm) => {
+      const requestPOSTUpdate = (e, issueForm) => {
         //grab the forms action (url to go to)
         //and method (HTTP method - POST in this case)
-        const nameAction = addIssueForm.getAttribute("action");
-        const nameMethod = addIssueForm.getAttribute("method");
+        const nameAction = issueForm.getAttribute("action");
+        const nameMethod = issueForm.getAttribute("method");
 
         //grab the form's name and age fields so we can check user input
-        const nameField = addIssueForm.querySelector("#nameField");
-        const issueField = addIssueForm.querySelector("#issueField");
+        const nameField = issueForm.querySelector("#nameField");
+        const issueField = issueForm.querySelector("#issueField");
 
         //create a new Ajax request (remember this is asynchronous)
         const xhr = new XMLHttpRequest();
@@ -183,18 +203,18 @@
         //prevent the browser's default action (to send the form on its own)
         e.preventDefault();
 
-        //how to tell if post went through if so then do the get
-        console.log(xhr.status);
-        //if (xhr.status === 200) {
-        requestGETHEADUpdate(e);
-        //}
         //return false to prevent the browser from trying to change page
         return false;
       };
 
+      const replyBtnPress = () => {
+        //grab the id to pass over to the new page. once you go to that page you are able to add comments to that section
+        window.location.href = "/editIssue.html";
+      };
+
       const init = () => {
         //grab form
-        const addIssueForm = document.querySelector("#addIssueForm");
+        addIssueForm = document.querySelector("#addIssueForm");
 
         //function to handle our request
         const addIssues = e => requestPOSTUpdate(e, addIssueForm);
@@ -202,18 +222,14 @@
         //add event listener
         addIssueForm.addEventListener("submit", addIssues);
 
-        //reply btns
-        const commentBtn = document.querySelector("#replyBtn");
-        $("#replyBtn").click(function() {
-          if ($("#comment").css("display") == "none") {
-            $("#comment").show();
-          } else {
-            $("#comment").hide();
-          }
+        $('#replyBtn').click(function(){
+          replyBtnPress();
         });
 
         //function to handle our request
         //const getIssues = e => requestGETHEADUpdate(e);
+        //get the data if there is any to show all issues
+        requestGETHEADUpdate(false);
 
         //add event listener
         //getIssues.addEventListener("onclick", getUsers);
@@ -258,7 +274,7 @@
                 <td>Luke Schwarting</td>
                 <td>LALALALA</td>
                 <td>
-                  <button id="replyBtn">Reply</button>
+                  <input onclick="replyBtnPress()" type="button" id="replyBtn" value="Reply"></input>
                 </td>
               </tr>
               <!-- <tr id="comment">
@@ -270,14 +286,14 @@
                 <td>LALALA2</td>
                 <td></td>
               </tr> -->
-              <tr id="comment">
+              <!-- <tr id="comment">
                 <td>
                   <textarea name="" id="" cols="45" rows="3"></textarea>
                 </td>
                 <td>
                   <button id="postCommentBtn">Post</button>
                 </td>
-              </tr>
+              </tr> -->
             </table>
           </div>
         </div>

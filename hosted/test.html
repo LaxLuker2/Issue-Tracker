@@ -14,14 +14,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
     <script type="text/babel">
+      var addIssueForm;
+
       const handleResponse = (xhr, parseResponse) => {
         const content = document.querySelector("#content");
         var Message = "";
+        let obj;
 
         //see if the response from the request returened anything meaning has a body or not
         if (xhr.response) {
           //if set to application/json === true if text/xml === false
-          const obj = JSON.parse(xhr.response);
+          obj = JSON.parse(xhr.response);
           console.dir(obj);
           if (obj.message) {
             Message = `Message: ${obj.message}`;
@@ -52,12 +55,27 @@
                 .appendTo("#row-" + i)
                 .attr("id", "replyBtn")
                 .html("<button>Reply</button>");
-              Message = json;
+              Message = obj;
             });
           }
         } else {
           //head
           console.log("recieved");
+        }
+
+        //if method is post\
+
+        if (obj) {
+          if (obj.shouldReload === "true") {
+            switch (xhr.status) {
+              case 201:
+                requestGETHEADUpdate(addIssueForm, false);
+                break;
+              default:
+                content.innerHTML = `<p>Error code not implemented by client</p>`;
+                break;
+            }
+          }
         }
 
         switch (xhr.status) {
@@ -115,7 +133,7 @@
         }
       };
 
-      const requestGETHEADUpdate = e => {
+      const requestGETHEADUpdate = (e, sentFromEvent) => {
         //check if userForm.id is equal to userForm or nameForm for setting correct values
 
         const url = "/getIssues"; //userForm.querySelector("#urlField").value;
@@ -134,7 +152,9 @@
 
         xhr.send();
 
-        e.preventDefault();
+        if (sentFromEvent) {
+          e.preventDefault();
+        }
         return false;
       };
 
@@ -189,15 +209,27 @@
 
       const init = () => {
         //grab form
-        //const addIssueForm = document.querySelector("#addIssueForm");
+        addIssueForm = document.querySelector("#addIssueForm");
+
         //function to handle our request
-        //const addIssues = e => requestPOSTUpdate(e, addIssueForm);
+        const addIssues = e => requestPOSTUpdate(e, addIssueForm);
+
         //add event listener
-        //addIssueForm.addEventListener("submit", addIssues);
-        //get all data for that id. Search for the id and present it to the user
-        //requestGETHEADUpdate(e);
+        addIssueForm.addEventListener("submit", addIssues);
+
+        //reply btns
+        const commentBtn = document.querySelector("#replyBtn");
+        $("#replyBtn").click(function() {
+          if ($("#comment").css("display") == "none") {
+            $("#comment").show();
+          } else {
+            $("#comment").hide();
+          }
+        });
+
         //function to handle our request
         //const getIssues = e => requestGETHEADUpdate(e);
+
         //add event listener
         //getIssues.addEventListener("onclick", getUsers);
       };
@@ -214,14 +246,14 @@
           <!-- <button class="btn btn-primary">Add Issue</button> -->
           <!-- <input type="submit" value="Add Issue" class="btn btn-primary" /> -->
           <!-- <br /> -->
-          <!-- <form id="addIssueForm" action="/addIssue" method="post">
+          <form id="addIssueForm" action="/addIssue" method="post">
             <input type="submit" value="Add Issue" class="btn btn-primary" />
             <label for="issue">Issue: </label>
             <input id="issueField" type="text" name="issue" />
             <label for="name">Name: </label>
             <input id="nameField" type="text" name="name" />
-            <input type="submit" value="Add User" />
-          </form> -->
+            <!-- <input type="submit" value="Add User" /> -->
+          </form>
           <div id="issues-container">
             <br />
             <!-- <ul id="issuesList"></ul> -->
@@ -240,22 +272,23 @@
                 <td>Bootstrp Style overwritting my own style</td>
                 <td>Luke Schwarting</td>
                 <td>LALALALA</td>
-              </tr>
-              <tr id="comment">
                 <td>
-                  Make local style sheet link tag be after the bootstrap link
-                  tag to the css
+                  <button id="replyBtn">Reply</button>
                 </td>
-                <td>Brady Sweeney</td>
-                <td>LALALA2</td>
-                <td></td>
               </tr>
+              <!-- <tr id="comment">
+               <td>
+                 Make local style sheet link tag be after the bootstrap link
+                 tag to the css
+               </td>
+               <td>Brady Sweeney</td>
+               <td>LALALA2</td>
+               <td></td>
+             </tr> -->
               <tr id="comment">
                 <td>
                   <textarea name="" id="" cols="45" rows="3"></textarea>
                 </td>
-                <td></td>
-                <td></td>
                 <td>
                   <button id="postCommentBtn">Post</button>
                 </td>
@@ -266,37 +299,37 @@
       </div>
     </section>
     <!-- <section id="body">
-      <div class="card">
-        <div class="card-body">
-          List all issues
-        </div>
-      </div>
-    </section> -->
+     <div class="card">
+       <div class="card-body">
+         List all issues
+       </div>
+     </div>
+   </section> -->
     <!-- <form id="nameForm" action="/addUser" method="post">
-        <label for="name">Name: </label>
-        <input id="nameField" type="text" name="name" />
-        <label for="age">Age: </label>
-        <input
-          id="ageField"
-          type="number"
-          name="age"
-          min="0"
-          max="100"
-          step="1"
-        />
-        <input type="submit" value="Add User" />
-      </form>
-      <form id="userForm" action="/getUsers" method="get">
-        <select id="urlField">
-          <option value="/getUsers">/getUsers</option>
-          <option value="/notReal">/notReal</option>
-        </select>
-        <select id="methodSelect">
-          <option value="get">GET</option>
-          <option value="head">HEAD</option>
-        </select>
-        <input type="submit" value="Get User" />
-      </form> -->
+       <label for="name">Name: </label>
+       <input id="nameField" type="text" name="name" />
+       <label for="age">Age: </label>
+       <input
+         id="ageField"
+         type="number"
+         name="age"
+         min="0"
+         max="100"
+         step="1"
+       />
+       <input type="submit" value="Add User" />
+     </form>
+     <form id="userForm" action="/getUsers" method="get">
+       <select id="urlField">
+         <option value="/getUsers">/getUsers</option>
+         <option value="/notReal">/notReal</option>
+       </select>
+       <select id="methodSelect">
+         <option value="get">GET</option>
+         <option value="head">HEAD</option>
+       </select>
+       <input type="submit" value="Get User" />
+     </form> -->
     <section id="content"></section>
   </body>
 </html>

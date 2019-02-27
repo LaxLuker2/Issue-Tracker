@@ -1,4 +1,5 @@
-const users = {};
+const shortid = require("shortid");
+const issues = {};
 
 // function to respond with a json object
 // takes request, response, status code and object to send
@@ -6,7 +7,7 @@ const respondJSON = (request, response, status, object) => {
   // object for our headers
   // Content-Type for json
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json"
   };
 
   // send response with json object
@@ -21,7 +22,7 @@ const respondJSONMeta = (request, response, status) => {
   // object for our headers
   // Content-Type for json
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json"
   };
 
   // send response without json object, just headers
@@ -29,28 +30,30 @@ const respondJSONMeta = (request, response, status) => {
   response.end();
 };
 
-const getUsers = (request, response) => {
+const getIssues = (request, response) => {
   // json object to send
-  const responseGetUsersJSON = {
-    users,
+  const responseGetIssuesJSON = {
+    issues
   };
 
-  const responseGetUsers = JSON.stringify(responseGetUsersJSON);
+  const responseGetIssues = JSON.stringify(responseGetIssuesJSON);
 
   // return 200 with message
-  return respondJSON(request, response, 200, responseGetUsers);
+  return respondJSON(request, response, 200, responseGetIssues);
 };
 
 // get meta info about user object
 // should calculate a 200
 // return 200 without message, just the meta data
-const getUsersMeta = (request, response) => respondJSONMeta(request, response, 200);
+const getIssuesMeta = (request, response) =>
+  respondJSONMeta(request, response, 200);
 
 // function to add a user from a POST body
-const addUser = (request, response, body) => {
+const addIssue = (request, response, body) => {
   // default json message
   const responseJSON = {
-    message: 'Issue and name are both required',
+    message: "Issue and name are both required",
+    shouldReload: "false"
   };
 
   // check to make sure we have both fields
@@ -58,9 +61,9 @@ const addUser = (request, response, body) => {
   // This could easily be abused with invalid types (such as booleans, numbers, etc)
   // If either are missing, send back an error message as a 400 badRequest
   if (!body.issue || !body.name) {
-    responseJSON.id = 'missingParams';
-    const responseAddUsersString = JSON.stringify(responseJSON);
-    return respondJSON(request, response, 400, responseAddUsersString);
+    responseJSON.id = "missingParams";
+    const responseAddIssuesString = JSON.stringify(responseJSON);
+    return respondJSON(request, response, 400, responseAddIssuesString);
   }
 
   // default status code to 201 created
@@ -68,25 +71,32 @@ const addUser = (request, response, body) => {
 
   // if that user's name already exists in our object
   // then switch to a 204 updated status
-  if (users[body.issue]) {
+  if (issues[body.issue]) {
     // update
-    users[body.issue].name = body.name;
+    issues[body.issue].name = body.name;
     responseCode = 204;
   } else {
     // otherwise create an object with that name
-    users[body.issue] = {};
+    issues[body.issue] = {};
   }
 
   // add or update fields for this user name
-  users[body.issue].issue = body.issue;
-  users[body.issue].name = body.name;
+  issues[body.issue].id = shortid.generate();
+  issues[body.issue].issue = body.issue;
+  issues[body.issue].name = body.name;
 
   // if response is created, then set our created message
   // and sent response with a message
   if (responseCode === 201) {
-    responseJSON.message = 'Created Successfully';
-    const responseAddUsersString = JSON.stringify(responseJSON);
-    return respondJSON(request, response, responseCode, responseAddUsersString);
+    responseJSON.message = "Created Successfully";
+    responseJSON.shouldReload = "true";
+    const responseAddIssuesString = JSON.stringify(responseJSON);
+    return respondJSON(
+      request,
+      response,
+      responseCode,
+      responseAddIssuesString
+    );
   }
   // 204 has an empty payload, just a success
   // It cannot have a body, so we just send a 204 without a message
@@ -98,8 +108,8 @@ const addUser = (request, response, body) => {
 const getNotFound = (request, response) => {
   // create error message for response
   const respondNotFound = {
-    message: 'The page you are looking for was not found.',
-    id: 'notFound',
+    message: "The page you are looking for was not found.",
+    id: "notFound"
   };
 
   const notFoundString = JSON.stringify(respondNotFound);
@@ -117,7 +127,7 @@ const notFoundMeta = (request, response) => {
 const getSuccess = (request, response) => {
   // json message for response
   const responseSucess = {
-    message: 'This is a successful response',
+    message: "This is a successful response"
   };
 
   const responseSucessString = JSON.stringify(responseSucess);
@@ -129,18 +139,18 @@ const getSuccess = (request, response) => {
 const getBadRequest = (request, response, params) => {
   // json message to send
   const responseBadRequest = {
-    message: 'This request has the required parameters',
+    message: "This request has the required parameters"
   };
 
   let statusCode = 200;
   let responseBadRequestString = JSON.stringify(responseBadRequest);
 
   // if the request does not contain a valid=true query parameter
-  if (!params.valid || params.valid !== 'true') {
+  if (!params.valid || params.valid !== "true") {
     // set our error message
-    responseBadRequest.message = 'Missing valid query parameter set to true';
+    responseBadRequest.message = "Missing valid query parameter set to true";
     // give the error a consistent id
-    responseBadRequest.id = 'badRequest';
+    responseBadRequest.id = "badRequest";
 
     responseBadRequestString = JSON.stringify(responseBadRequest);
     statusCode = 400;
@@ -153,18 +163,18 @@ const getBadRequest = (request, response, params) => {
 const getUnauthorized = (request, response, params) => {
   // json message to send
   const respondUnauthorized = {
-    message: 'This request has the required parameters',
+    message: "This request has the required parameters"
   };
 
   let statusCode = 200;
   let responseUnauthorizedString = JSON.stringify(respondUnauthorized);
 
   // if the request does not contain a valid=true query parameter
-  if (!params.loggedIn || params.loggedIn !== 'yes') {
+  if (!params.loggedIn || params.loggedIn !== "yes") {
     // set our error message
-    respondUnauthorized.message = 'Missing loggedIn query parameter set to yes';
+    respondUnauthorized.message = "Missing loggedIn query parameter set to yes";
     // give the error a consistent id
-    respondUnauthorized.id = 'Unauthorized';
+    respondUnauthorized.id = "Unauthorized";
 
     responseUnauthorizedString = JSON.stringify(respondUnauthorized);
     statusCode = 401;
@@ -177,8 +187,8 @@ const getUnauthorized = (request, response, params) => {
 const getForbidden = (request, response) => {
   // json message for response
   const respondForbidden = {
-    message: 'You do not have access to this content',
-    id: 'Forbidden',
+    message: "You do not have access to this content",
+    id: "Forbidden"
   };
 
   const forbiddenString = JSON.stringify(respondForbidden);
@@ -190,8 +200,8 @@ const getForbidden = (request, response) => {
 const getInternal = (request, response) => {
   // json message for response
   const respondInternal = {
-    message: 'Internal Server Error. Something went wrong',
-    id: 'InternalError',
+    message: "Internal Server Error. Something went wrong",
+    id: "InternalError"
   };
 
   const internalString = JSON.stringify(respondInternal);
@@ -204,8 +214,8 @@ const getNotImplemented = (request, response) => {
   // json message for response
   const respondNotImplemented = {
     message:
-      'A get request for this page has not been implemented yet. Check again later for updated content',
-    id: 'notImplemented',
+      "A get request for this page has not been implemented yet. Check again later for updated content",
+    id: "notImplemented"
   };
 
   const notImplementedString = JSON.stringify(respondNotImplemented);
@@ -216,9 +226,9 @@ const getNotImplemented = (request, response) => {
 
 // set public modules
 module.exports = {
-  getUsers,
-  getUsersMeta,
-  addUser,
+  getIssues,
+  getIssuesMeta,
+  addIssue,
   getNotFound,
   notFoundMeta,
   getSuccess,
@@ -226,5 +236,5 @@ module.exports = {
   getUnauthorized,
   getForbidden,
   getInternal,
-  getNotImplemented,
+  getNotImplemented
 };

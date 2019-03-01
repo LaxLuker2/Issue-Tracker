@@ -1,4 +1,5 @@
-const shortid = require("shortid");
+const shortid = require('shortid');
+
 const issues = {};
 
 // function to respond with a json object
@@ -7,7 +8,7 @@ const respondJSON = (request, response, status, object) => {
   // object for our headers
   // Content-Type for json
   const headers = {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
 
   // send response with json object
@@ -22,7 +23,7 @@ const respondJSONMeta = (request, response, status) => {
   // object for our headers
   // Content-Type for json
   const headers = {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
 
   // send response without json object, just headers
@@ -33,7 +34,7 @@ const respondJSONMeta = (request, response, status) => {
 const getIssues = (request, response) => {
   // json object to send
   const responseGetIssuesJSON = {
-    issues
+    issues,
   };
 
   const responseGetIssues = JSON.stringify(responseGetIssuesJSON);
@@ -45,15 +46,14 @@ const getIssues = (request, response) => {
 // get meta info about user object
 // should calculate a 200
 // return 200 without message, just the meta data
-const getIssuesMeta = (request, response) =>
-  respondJSONMeta(request, response, 200);
+const getIssuesMeta = (request, response) => respondJSONMeta(request, response, 200);
 
 // function to add a user from a POST body
 const addIssue = (request, response, body) => {
   // default json message
   const responseJSON = {
-    message: "Issue and name are both required",
-    shouldReload: "false"
+    message: 'Issue and name are both required',
+    shouldReload: 'false',
   };
 
   // check to make sure we have both fields
@@ -61,7 +61,7 @@ const addIssue = (request, response, body) => {
   // This could easily be abused with invalid types (such as booleans, numbers, etc)
   // If either are missing, send back an error message as a 400 badRequest
   if (!body.issue || !body.name) {
-    responseJSON.id = "missingParams";
+    responseJSON.id = 'missingParams';
     const responseAddIssuesString = JSON.stringify(responseJSON);
     return respondJSON(request, response, 400, responseAddIssuesString);
   }
@@ -88,14 +88,14 @@ const addIssue = (request, response, body) => {
   // if response is created, then set our created message
   // and sent response with a message
   if (responseCode === 201) {
-    responseJSON.message = "Created Successfully";
-    responseJSON.shouldReload = "true";
+    responseJSON.message = 'Created Successfully';
+    responseJSON.shouldReload = 'true';
     const responseAddIssuesString = JSON.stringify(responseJSON);
     return respondJSON(
       request,
       response,
       responseCode,
-      responseAddIssuesString
+      responseAddIssuesString,
     );
   }
   // 204 has an empty payload, just a success
@@ -108,8 +108,8 @@ const addIssue = (request, response, body) => {
 const getNotFound = (request, response) => {
   // create error message for response
   const respondNotFound = {
-    message: "The page you are looking for was not found.",
-    id: "notFound"
+    message: 'The page you are looking for was not found.',
+    id: 'notFound',
   };
 
   const notFoundString = JSON.stringify(respondNotFound);
@@ -127,7 +127,7 @@ const notFoundMeta = (request, response) => {
 const getSuccess = (request, response) => {
   // json message for response
   const responseSucess = {
-    message: "This is a successful response"
+    message: 'This is a successful response',
   };
 
   const responseSucessString = JSON.stringify(responseSucess);
@@ -139,18 +139,18 @@ const getSuccess = (request, response) => {
 const getBadRequest = (request, response, params) => {
   // json message to send
   const responseBadRequest = {
-    message: "This request has the required parameters"
+    message: 'This request has the required parameters',
   };
 
   let statusCode = 200;
   let responseBadRequestString = JSON.stringify(responseBadRequest);
 
   // if the request does not contain a valid=true query parameter
-  if (!params.valid || params.valid !== "true") {
+  if (!params.valid || params.valid !== 'true') {
     // set our error message
-    responseBadRequest.message = "Missing valid query parameter set to true";
+    responseBadRequest.message = 'Missing valid query parameter set to true';
     // give the error a consistent id
-    responseBadRequest.id = "badRequest";
+    responseBadRequest.id = 'badRequest';
 
     responseBadRequestString = JSON.stringify(responseBadRequest);
     statusCode = 400;
@@ -163,18 +163,18 @@ const getBadRequest = (request, response, params) => {
 const getUnauthorized = (request, response, params) => {
   // json message to send
   const respondUnauthorized = {
-    message: "This request has the required parameters"
+    message: 'This request has the required parameters',
   };
 
   let statusCode = 200;
   let responseUnauthorizedString = JSON.stringify(respondUnauthorized);
 
   // if the request does not contain a valid=true query parameter
-  if (!params.loggedIn || params.loggedIn !== "yes") {
+  if (!params.loggedIn || params.loggedIn !== 'yes') {
     // set our error message
-    respondUnauthorized.message = "Missing loggedIn query parameter set to yes";
+    respondUnauthorized.message = 'Missing loggedIn query parameter set to yes';
     // give the error a consistent id
-    respondUnauthorized.id = "Unauthorized";
+    respondUnauthorized.id = 'Unauthorized';
 
     responseUnauthorizedString = JSON.stringify(respondUnauthorized);
     statusCode = 401;
@@ -187,8 +187,8 @@ const getUnauthorized = (request, response, params) => {
 const getForbidden = (request, response) => {
   // json message for response
   const respondForbidden = {
-    message: "You do not have access to this content",
-    id: "Forbidden"
+    message: 'You do not have access to this content',
+    id: 'Forbidden',
   };
 
   const forbiddenString = JSON.stringify(respondForbidden);
@@ -200,8 +200,8 @@ const getForbidden = (request, response) => {
 const getInternal = (request, response) => {
   // json message for response
   const respondInternal = {
-    message: "Internal Server Error. Something went wrong",
-    id: "InternalError"
+    message: 'Internal Server Error. Something went wrong',
+    id: 'InternalError',
   };
 
   const internalString = JSON.stringify(respondInternal);
@@ -214,8 +214,8 @@ const getNotImplemented = (request, response) => {
   // json message for response
   const respondNotImplemented = {
     message:
-      "A get request for this page has not been implemented yet. Check again later for updated content",
-    id: "notImplemented"
+      'A get request for this page has not been implemented yet. Check again later for updated content',
+    id: 'notImplemented',
   };
 
   const notImplementedString = JSON.stringify(respondNotImplemented);
@@ -236,5 +236,5 @@ module.exports = {
   getUnauthorized,
   getForbidden,
   getInternal,
-  getNotImplemented
+  getNotImplemented,
 };

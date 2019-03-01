@@ -26,9 +26,9 @@
           //if set to application/json === true if text/xml === false
           obj = JSON.parse(xhr.response);
           console.dir(obj);
-          if (obj.message) {
-            Message = `Message: ${obj.message}`;
-          } else {
+          // if (obj.message) {
+          //   Message = `Message: ${obj.message}`;
+          // } else {
             //Message = `${JSON.stringify(obj.issues)}`;
             $("#issue-table tr.api").remove();
 
@@ -54,10 +54,10 @@
               $("<td>")
                 .appendTo("#row-" + i)
                 .attr("id", "replyBtn")
-                .html("<button>Reply</button>");
+                .html("<input onclick='replyBtnPress("+item.id+")' type='button' id='replyBtn' class="+item.id+" value='Reply'></input>");
               Message = obj;
             });
-          }
+          //}
         } else {
           //head
           console.log("recieved");
@@ -207,9 +207,9 @@
         return false;
       };
 
-      const replyBtnPress = () => {
+      const replyBtnPress = (itemid) => {
         //grab the id to pass over to the new page. once you go to that page you are able to add comments to that section
-        window.location.href = "/editIssue.html";
+        window.location.href = "/editIssue.html?id="+itemid;
       };
 
       const init = () => {
@@ -223,7 +223,7 @@
         addIssueForm.addEventListener("submit", addIssues);
 
         $('#replyBtn').click(function(){
-          replyBtnPress();
+          replyBtnPress(123);
         });
 
         //function to handle our request

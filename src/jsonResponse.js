@@ -1,4 +1,5 @@
 const shortid = require("shortid");
+
 const issues = {};
 
 // function to respond with a json object
@@ -56,6 +57,9 @@ const addIssue = (request, response, body) => {
     shouldReload: "false"
   };
 
+  //create an id variable
+  let id;
+
   // check to make sure we have both fields
   // We might want more validation than just checking if they exist
   // This could easily be abused with invalid types (such as booleans, numbers, etc)
@@ -76,19 +80,83 @@ const addIssue = (request, response, body) => {
     issues[body.issue].name = body.name;
     responseCode = 204;
   } else {
+    id = shortid.generate();
     // otherwise create an object with that name
-    issues[body.issue] = {};
+    issues[id] = {};
   }
 
   // add or update fields for this user name
-  issues[body.issue].id = shortid.generate();
-  issues[body.issue].issue = body.issue;
-  issues[body.issue].name = body.name;
+  issues[id].id = id;
+  issues[id].issue = body.issue;
+  issues[id].name = body.name;
+  issues[id].comments = [body.issue];
 
   // if response is created, then set our created message
   // and sent response with a message
   if (responseCode === 201) {
     responseJSON.message = "Created Successfully";
+    responseJSON.shouldReload = "true";
+    const responseAddIssuesString = JSON.stringify(responseJSON);
+    return respondJSON(
+      request,
+      response,
+      responseCode,
+      responseAddIssuesString
+    );
+  }
+  // 204 has an empty payload, just a success
+  // It cannot have a body, so we just send a 204 without a message
+  // 204 will not alter the browser in any way!!!
+  return respondJSONMeta(request, response, responseCode);
+};
+
+//add to the comments
+const addComment = (request, response, body) => {
+  console.log("called addComment");
+  // default json message
+  const responseJSON = {
+    message: "Comment field is required",
+    shouldReload: "false"
+  };
+
+  //create an id variable
+  //let id;
+
+  // check to make sure we have both fields
+  // We might want more validation than just checking if they exist
+  // This could easily be abused with invalid types (such as booleans, numbers, etc)
+  // If either are missing, send back an error message as a 400 badRequest
+  if (!body.comment) {
+    responseJSON.id = "missingParams";
+    const responseAddIssuesString = JSON.stringify(responseJSON);
+    return respondJSON(request, response, 400, responseAddIssuesString);
+  }
+
+  // default status code to 201 created
+  const responseCode = 201;
+
+  // if that user's name already exists in our object
+  // then switch to a 204 updated status
+  // if (issues[body.issue]) {
+  //   // update
+  //   issues[body.issue].name = body.name;
+  //   responseCode = 204;
+  // } else {
+  //   id = shortid.generate();
+  //   // otherwise create an object with that name
+  //   issues[id] = {};
+  // }
+
+  // add or update fields for this user name
+  // issues[id].id = id;
+  // issues[id].issue = body.issue;
+  // issues[id].name = body.name;
+  issues[body.id].comments.push(body.comment);
+
+  // if response is created, then set our created message
+  // and sent response with a message
+  if (responseCode === 201) {
+    responseJSON.message = "Created Comment Successfully";
     responseJSON.shouldReload = "true";
     const responseAddIssuesString = JSON.stringify(responseJSON);
     return respondJSON(
@@ -229,6 +297,7 @@ module.exports = {
   getIssues,
   getIssuesMeta,
   addIssue,
+  addComment,
   getNotFound,
   notFoundMeta,
   getSuccess,

@@ -14,50 +14,93 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
     <script type="text/babel">
+      let issueIdFromUrl;
+
       const handleResponse = (xhr, parseResponse) => {
         const content = document.querySelector("#content");
-        var Message = "";
+        let Message = "";
+        let index = 0;
+        let obj;
 
         //see if the response from the request returened anything meaning has a body or not
         if (xhr.response) {
           //if set to application/json === true if text/xml === false
-          const obj = JSON.parse(xhr.response);
+          obj = JSON.parse(xhr.response);
+          console.log("hello");
           console.dir(obj);
           if (obj.message) {
             Message = `Message: ${obj.message}`;
           } else {
-            //Message = `${JSON.stringify(obj.issues)}`;
-            $("#issue-table tr.api").remove();
+            //check if there is a issue with that id from the URL
+            if (obj.issues[issueIdFromUrl]) {
+              //Message = `${JSON.stringify(obj.issues)}`;
+              $("#comments-table tr.api").remove();
 
-            console.log("each");
-            console.log(obj);
-            $.each(obj.issues, function(i, item) {
               console.log("each");
-              console.log(item);
+              console.log(obj.issues[issueIdFromUrl].comments);
+              $.each(obj.issues[issueIdFromUrl].comments, function(i, item) {
+                //   console.log("each");
+                //   console.log(item);
+                //   console.log("each i");
+                //   console.log(i);
+                $("<tr>")
+                  .attr("id", "row-" + i)
+                  .attr("class", "api")
+                  .appendTo("#comments-table");
+                $("<td>")
+                  .appendTo("#row-" + i)
+                  .attr("class", "first-col")
+                  .text(item);
+                //   $("<td>")
+                //     .appendTo("#row-" + i)
+                //     .attr("id", "comment-" + i)
+                //     .html("<textarea name='' cols='45' rows='3'></textarea>");
+                //Message = json;
+                index = i + 1;
+              });
               $("<tr>")
-                .attr("id", "row-" + i)
+                .attr("id", "comment-" + index)
                 .attr("class", "api")
-                .appendTo("#issue-table");
+                .appendTo("#comments-table");
               $("<td>")
-                .appendTo("#row-" + i)
-                .attr("class", "first-col")
-                .text(item.issue);
-              $("<td>")
-                .appendTo("#row-" + i)
-                .text(item.name);
-              $("<td>")
-                .appendTo("#row-" + i)
-                .text(item.id);
-              $("<td>")
-                .appendTo("#row-" + i)
-                .attr("id", "replyBtn")
-                .html("<button>Reply</button>");
-              Message = json;
-            });
+                .appendTo("#comment-" + index)
+                .html(
+                  "<form id='addCommentForm' action='/addComment' method='post'> <label for='comment'>Comment: </label><input id='commentField' type='text' name='comment' /> <input type='submit' value='Post' class='btn btn-primary'></input></form>"
+                );
+              // $("<td>")
+              //   .appendTo("#row-" + index)
+              //   .html(
+              //     "<input id='postCommentBtn" +
+              //       index +
+              //       " type='submit' value='Post'></input> </form>"
+              //   );
+
+              const addCommentForm = document.querySelector("#addCommentForm");
+              //function to handle our request
+              const addComments = e => requestPOSTUpdate(e, addCommentForm);
+              //add event listener
+              addCommentForm.addEventListener("submit", addComments);
+            } else {
+              console.log("couldnt find that issue");
+            }
           }
         } else {
           //head
           console.log("recieved");
+        }
+        console.log(obj);
+        //if method is post\
+        if (obj) {
+          if (obj.shouldReload === "true") {
+            switch (xhr.status) {
+              case 201:
+                requestGETHEADUpdate();
+                break;
+              default:
+                content.innerHTML = `<p>Error code not implemented by client</p>`;
+                break;
+            }
+          }
         }
 
         switch (xhr.status) {
@@ -115,7 +158,7 @@
         }
       };
 
-      const requestGETHEADUpdate = e => {
+      const requestGETHEADUpdate = () => {
         //check if userForm.id is equal to userForm or nameForm for setting correct values
 
         const url = "/getIssues"; //userForm.querySelector("#urlField").value;
@@ -134,19 +177,22 @@
 
         xhr.send();
 
-        e.preventDefault();
+        //e.preventDefault();
         return false;
       };
 
-      const requestPOSTUpdate = (e, addIssueForm) => {
+      const requestPOSTUpdate = (e, addCommentForm) => {
         //grab the forms action (url to go to)
         //and method (HTTP method - POST in this case)
-        const nameAction = addIssueForm.getAttribute("action");
-        const nameMethod = addIssueForm.getAttribute("method");
+        const nameAction = addCommentForm.getAttribute("action");
+        const nameMethod = addCommentForm.getAttribute("method");
+
+        console.log(nameAction);
+        console.log(nameMethod);
 
         //grab the form's name and age fields so we can check user input
-        const nameField = addIssueForm.querySelector("#nameField");
-        const issueField = addIssueForm.querySelector("#issueField");
+        const commentField = addCommentForm.querySelector("#commentField");
+        //const issueField = addCommentForm.querySelector("#issueField");
 
         //create a new Ajax request (remember this is asynchronous)
         const xhr = new XMLHttpRequest();
@@ -175,7 +221,7 @@
         //So ours might look like  name=test&age=22
         //Again the 'name' fields in the form are the variable names in the string
         //and the variable names the server will look for.
-        const formData = `issue=${issueField.value}&name=${nameField.value}`;
+        const formData = `comment=${commentField.value}&id=${issueIdFromUrl}`;
 
         //send our request with the data
         xhr.send(formData);
@@ -200,6 +246,12 @@
         //const getIssues = e => requestGETHEADUpdate(e);
         //add event listener
         //getIssues.addEventListener("onclick", getUsers);
+        //***************************************************************************************
+        //get window url and get the params id
+        const getIdFromUrl = location.search.split("=")[1];
+        issueIdFromUrl = getIdFromUrl;
+        //pass that id into the get to get the specific issue back
+        requestGETHEADUpdate();
       };
 
       window.onload = init;
@@ -226,17 +278,17 @@
             <br />
             <!-- <ul id="issuesList"></ul> -->
             <table
-              id="issue-table"
+              id="comments-table"
               class="table"
               cellspacing="0"
               cellpadding="0"
             >
               <tr id="first-col">
                 <th>Issue</th>
-                <th>Author</th>
-                <th>ID</th>
+                <!-- <th>Author</th>
+                <th>ID</th> -->
               </tr>
-              <tr>
+              <!-- <tr>
                 <td>Bootstrp Style overwritting my own style</td>
                 <td>Luke Schwarting</td>
                 <td>LALALALA</td>
@@ -259,7 +311,7 @@
                 <td>
                   <button id="postCommentBtn">Post</button>
                 </td>
-              </tr>
+              </tr> -->
             </table>
           </div>
         </div>

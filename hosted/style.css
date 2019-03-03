@@ -55,3 +55,8 @@ section {
 .table .full-width-row {
   width: 100%;
 }
+
+#comments-table th,
+#comments-table td {
+  text-align: left;
+}

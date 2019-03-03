@@ -30,8 +30,10 @@
             Message = `Message: ${obj.message}`;
           } else {
             //Message = `${JSON.stringify(obj.issues)}`;
+            //remove the data in the tabel
             $("#issue-table tr.api").remove();
 
+            //add the new data to the table
             console.log("each");
             console.log(obj);
             $.each(obj.issues, function(i, item) {
@@ -53,9 +55,14 @@
                 .text(item.id);
               $("<td>")
                 .appendTo("#row-" + i)
-                .attr("id", "replyBtn")
-                .html("<button>Reply</button>");
+                .attr("id", "replyBtn" + i)
+                .html("<input type='button' value='Reply'></input>");
               Message = obj;
+              
+              //get the reply btn and add the click function to it
+              const btn = document.querySelector("#replyBtn" + i);
+              const sendToNewPage = () => replyBtnPress(item.id);
+              btn.addEventListener("click", sendToNewPage);
             });
           }
         } else {
@@ -64,7 +71,6 @@
         }
 
         //if method is post\
-
         if (obj) {
           if (obj.shouldReload === "true") {
             switch (xhr.status) {
@@ -133,7 +139,7 @@
         }
       };
 
-      const requestGETHEADUpdate = (sentFromEvent) => {
+      const requestGETHEADUpdate = (e, sentFromEvent) => {
         //check if userForm.id is equal to userForm or nameForm for setting correct values
 
         const url = "/getIssues"; //userForm.querySelector("#urlField").value;
@@ -153,7 +159,7 @@
         xhr.send();
 
         if (sentFromEvent) {
-          //e.preventDefault();
+          e.preventDefault();
         }
         return false;
       };
@@ -207,9 +213,9 @@
         return false;
       };
 
-      const replyBtnPress = () => {
+      const replyBtnPress = (itemid) => {
         //grab the id to pass over to the new page. once you go to that page you are able to add comments to that section
-        window.location.href = "/editIssue.html";
+        window.location.href = "/editIssue.html?id="+itemid;
       };
 
       const init = () => {
@@ -222,8 +228,8 @@
         //add event listener
         addIssueForm.addEventListener("submit", addIssues);
 
-        $('#replyBtn').click(function(){
-          replyBtnPress();
+        $('#replyBtn1').click(function(){
+          replyBtnPress(123);
         });
 
         //function to handle our request
@@ -274,7 +280,7 @@
                 <td>Luke Schwarting</td>
                 <td>LALALALA</td>
                 <td>
-                  <input onclick="replyBtnPress()" type="button" id="replyBtn" value="Reply"></input>
+                  <input type="button" id="replyBtn1" value="Reply"></input>
                 </td>
               </tr>
               <!-- <tr id="comment">

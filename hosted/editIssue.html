@@ -56,11 +56,11 @@
               $("<td>")
                 .appendTo("#comment-" + index)
                 .html(
-                  "<form id='addCommentForm' action='/addComment' method='post'> <label for='comment'>Comment: </label><input id='commentField' type='text' name='comment' /> <input type='submit' value='Post' class='btn btn-primary'></input></form>"
+                  "<form id='addCommentForm"+index+"' action='/addComment' method='post'> <label for='comment'>Comment: </label><input id='commentField' type='text' name='comment' /> <input type='submit' value='Post' class='btn btn-primary'></input></form>"
                 );
 
               //grab form
-              const addCommentForm = document.querySelector("#addCommentForm");
+              const addCommentForm = document.querySelector("#addCommentForm"+index);
               //function to handle our request
               const addComments = e => requestPOSTUpdate(e, addCommentForm);
               //add event listener
@@ -243,7 +243,7 @@
               <tr id="first-col">
                 <th>Issue</th>
               </tr>
-              <!-- <tr class="comment1">
+              <tr class="comment1">
                 <td>Bootstrp Style overwritting my own style</td>
               </tr>
               <tr class="comment1">
@@ -254,13 +254,13 @@
               </tr>
               <tr class="comment1">
                 <td>
-                  <form id='addCommentForm' action='/addComment' method='post'>
+                  <form id='addCommentForm'>
                     <label for='comment'>Comment: </label>
                     <input id='commentField' type='text' name='comment' />
                     <input type='submit' value='Post' class='btn btn-primary'></input>
                   </form>
                 </td>
-              </tr> -->
+              </tr>
             </table>
           </div>
         </div>

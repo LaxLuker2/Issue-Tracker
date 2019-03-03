@@ -82,9 +82,11 @@
         switch (xhr.status) {
           case 200:
             status = 200;
+            content.innerHTML = '';
             break;
           case 201:
             status = 201;
+            content.innerHTML = '';
             break;
           case 204:
             status = 204;

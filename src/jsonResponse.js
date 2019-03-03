@@ -58,7 +58,7 @@ const addIssue = (request, response, body) => {
   };
 
   // create an id variable
-  let id;
+  let newId;
 
   // check to make sure we have both fields
   // We might want more validation than just checking if they exist
@@ -75,14 +75,14 @@ const addIssue = (request, response, body) => {
 
   // if that user's name already exists in our object
   // then switch to a 204 updated status
-  //search through all issues if there is an issue with that name already
+  // search through all issues if there is an issue with that name already
   let issueNameExists = false;
-  for (var iss in issues) {
-    var obj = issues[iss];
-    if (obj.issue === body.issue) {
-      //if the issue already exist set the id and set issueNameExists to true
+  const myObj = issues;
+  const keys = Object.keys(myObj);
+  for (let i = 0; i < keys.length; i++) {
+    if (body.issue === myObj[keys[i]].issue) {
       issueNameExists = true;
-      id = obj.id;
+      newId = myObj[keys[i]].id;
       break;
     }
   }
@@ -91,16 +91,16 @@ const addIssue = (request, response, body) => {
     // update
     responseCode = 204;
   } else {
-    id = shortid.generate();
+    newId = shortid.generate();
     // otherwise create an object with that name
-    issues[id] = {};
+    issues[newId] = {};
   }
 
   // add or update fields for this user name
-  issues[id].id = id;
-  issues[id].issue = body.issue;
-  issues[id].name = body.name;
-  issues[id].comments = [body.issue];
+  issues[newId].id = newId;
+  issues[newId].issue = body.issue;
+  issues[newId].name = body.name;
+  issues[newId].comments = [body.issue];
 
   // if response is created, then set our created message
   // and sent response with a message

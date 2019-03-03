@@ -60,3 +60,7 @@ section {
 #comments-table td {
   text-align: left;
 }
+
+.comment1 {
+  display: none;
+}

@@ -23,14 +23,13 @@
 
         //see if the response from the request returened anything meaning has a body or not
         if (xhr.response) {
-          //if set to application/json === true if text/xml === false
+          //if set to application/json === true
           obj = JSON.parse(xhr.response);
           console.dir(obj);
           if (obj.message) {
             Message = `Message: ${obj.message}`;
           } else {
-            //Message = `${JSON.stringify(obj.issues)}`;
-            //remove the data in the tabel
+            //remove the data in the table
             $("#issue-table tr.api").remove();
 
             //add the new data to the table
@@ -70,7 +69,7 @@
           console.log("recieved");
         }
 
-        //if method is post\
+        //if method is post
         if (obj) {
           if (obj.shouldReload === "true") {
             switch (xhr.status) {
@@ -87,15 +86,9 @@
         switch (xhr.status) {
           case 200:
             status = 200;
-            content.innerHTML = `<b>Success</b>`;
-            content.innerHTML += `<br>`;
-            content.innerHTML += `<p>${Message}</p>`;
             break;
           case 201:
             status = 201;
-            content.innerHTML = `<b>Create</b>`;
-            content.innerHTML += `<br>`;
-            content.innerHTML += `<p>${Message}</p>`;
             break;
           case 204:
             status = 204;
@@ -229,16 +222,11 @@
         addIssueForm.addEventListener("submit", addIssues);
 
         $('#replyBtn1').click(function(){
-          replyBtnPress(123);
+          replyBtnPress('LGS123');
         });
-
-        //function to handle our request
-        //const getIssues = e => requestGETHEADUpdate(e);
+        
         //get the data if there is any to show all issues
         requestGETHEADUpdate(false);
-
-        //add event listener
-        //getIssues.addEventListener("onclick", getUsers);
       };
 
       window.onload = init;
@@ -250,20 +238,15 @@
     <section id="top">
       <div class="card">
         <div class="card-body">
-          <!-- <button class="btn btn-primary">Add Issue</button> -->
-          <!-- <input type="submit" value="Add Issue" class="btn btn-primary" /> -->
-          <!-- <br /> -->
           <form id="addIssueForm" action="/addIssue" method="post">
             <input type="submit" value="Add Issue" class="btn btn-primary" />
             <label for="issue">Issue: </label>
             <input id="issueField" type="text" name="issue" />
             <label for="name">Name: </label>
             <input id="nameField" type="text" name="name" />
-            <!-- <input type="submit" value="Add User" /> -->
           </form>
           <div id="issues-container">
             <br />
-            <!-- <ul id="issuesList"></ul> -->
             <table
               id="issue-table"
               class="table"
@@ -278,65 +261,16 @@
               <tr>
                 <td>Bootstrp Style overwritting my own style</td>
                 <td>Luke Schwarting</td>
-                <td>LALALALA</td>
+                <td>LGS123</td>
                 <td>
                   <input type="button" id="replyBtn1" value="Reply"></input>
                 </td>
               </tr>
-              <!-- <tr id="comment">
-                <td>
-                  Make local style sheet link tag be after the bootstrap link
-                  tag to the css
-                </td>
-                <td>Brady Sweeney</td>
-                <td>LALALA2</td>
-                <td></td>
-              </tr> -->
-              <!-- <tr id="comment">
-                <td>
-                  <textarea name="" id="" cols="45" rows="3"></textarea>
-                </td>
-                <td>
-                  <button id="postCommentBtn">Post</button>
-                </td>
-              </tr> -->
             </table>
           </div>
         </div>
       </div>
     </section>
-    <!-- <section id="body">
-      <div class="card">
-        <div class="card-body">
-          List all issues
-        </div>
-      </div>
-    </section> -->
-    <!-- <form id="nameForm" action="/addUser" method="post">
-        <label for="name">Name: </label>
-        <input id="nameField" type="text" name="name" />
-        <label for="age">Age: </label>
-        <input
-          id="ageField"
-          type="number"
-          name="age"
-          min="0"
-          max="100"
-          step="1"
-        />
-        <input type="submit" value="Add User" />
-      </form>
-      <form id="userForm" action="/getUsers" method="get">
-        <select id="urlField">
-          <option value="/getUsers">/getUsers</option>
-          <option value="/notReal">/notReal</option>
-        </select>
-        <select id="methodSelect">
-          <option value="get">GET</option>
-          <option value="head">HEAD</option>
-        </select>
-        <input type="submit" value="Get User" />
-      </form> -->
     <section id="content"></section>
   </body>
 </html>

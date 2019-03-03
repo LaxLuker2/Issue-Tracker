@@ -67,14 +67,8 @@
                 .html(
                   "<form id='addCommentForm' action='/addComment' method='post'> <label for='comment'>Comment: </label><input id='commentField' type='text' name='comment' /> <input type='submit' value='Post' class='btn btn-primary'></input></form>"
                 );
-              // $("<td>")
-              //   .appendTo("#row-" + index)
-              //   .html(
-              //     "<input id='postCommentBtn" +
-              //       index +
-              //       " type='submit' value='Post'></input> </form>"
-              //   );
-
+              
+              //grab form
               const addCommentForm = document.querySelector("#addCommentForm");
               //function to handle our request
               const addComments = e => requestPOSTUpdate(e, addCommentForm);
@@ -88,8 +82,8 @@
           //head
           console.log("recieved");
         }
-        console.log(obj);
-        //if method is post\
+
+        //if method is post
         if (obj) {
           if (obj.shouldReload === "true") {
             switch (xhr.status) {
@@ -159,8 +153,6 @@
       };
 
       const requestGETHEADUpdate = () => {
-        //check if userForm.id is equal to userForm or nameForm for setting correct values
-
         const url = "/getIssues"; //userForm.querySelector("#urlField").value;
         const method = "get"; //userForm.querySelector("#methodSelect").value;
 
@@ -234,24 +226,23 @@
       };
 
       const init = () => {
-        //grab form
-        //const addIssueForm = document.querySelector("#addIssueForm");
-        //function to handle our request
-        //const addIssues = e => requestPOSTUpdate(e, addIssueForm);
-        //add event listener
-        //addIssueForm.addEventListener("submit", addIssues);
-        //get all data for that id. Search for the id and present it to the user
-        //requestGETHEADUpdate(e);
-        //function to handle our request
-        //const getIssues = e => requestGETHEADUpdate(e);
-        //add event listener
-        //getIssues.addEventListener("onclick", getUsers);
-        //***************************************************************************************
         //get window url and get the params id
         const getIdFromUrl = location.search.split("=")[1];
         issueIdFromUrl = getIdFromUrl;
-        //pass that id into the get to get the specific issue back
-        requestGETHEADUpdate();
+        if(getIdFromUrl === 'LGS123'){
+          $.each($(".comment1"), function(i, item) {
+            $(".comment1").show();
+          });
+          //grab form
+          const addCommentForm = document.querySelector("#addCommentForm");
+          //function to handle our request
+          const addComments = e => requestPOSTUpdate(e, addCommentForm);
+          //add event listener
+          addCommentForm.addEventListener("submit", addComments);
+        } else{
+          //pass that id into the get to get the specific issue back
+          requestGETHEADUpdate();
+        }
       };
 
       window.onload = init;
@@ -263,20 +254,7 @@
     <section id="top">
       <div class="card">
         <div class="card-body">
-          <!-- <button class="btn btn-primary">Add Issue</button> -->
-          <!-- <input type="submit" value="Add Issue" class="btn btn-primary" /> -->
-          <!-- <br /> -->
-          <!-- <form id="addIssueForm" action="/addIssue" method="post">
-            <input type="submit" value="Add Issue" class="btn btn-primary" />
-            <label for="issue">Issue: </label>
-            <input id="issueField" type="text" name="issue" />
-            <label for="name">Name: </label>
-            <input id="nameField" type="text" name="name" />
-            <input type="submit" value="Add User" />
-          </form> -->
           <div id="issues-container">
-            <br />
-            <!-- <ul id="issuesList"></ul> -->
             <table
               id="comments-table"
               class="table"
@@ -285,70 +263,30 @@
             >
               <tr id="first-col">
                 <th>Issue</th>
-                <!-- <th>Author</th>
-                <th>ID</th> -->
               </tr>
-              <!-- <tr>
+              <tr class="comment1">
                 <td>Bootstrp Style overwritting my own style</td>
-                <td>Luke Schwarting</td>
-                <td>LALALALA</td>
               </tr>
-              <tr id="comment">
+              <tr class="comment1">
                 <td>
                   Make local style sheet link tag be after the bootstrap link
                   tag to the css
                 </td>
-                <td>Brady Sweeney</td>
-                <td>LALALA2</td>
-                <td></td>
               </tr>
-              <tr id="comment">
+              <tr class="comment1">
                 <td>
-                  <textarea name="" id="" cols="45" rows="3"></textarea>
+                  <form id='addCommentForm' action='/addComment' method='post'>
+                    <label for='comment'>Comment: </label>
+                    <input id='commentField' type='text' name='comment' />
+                    <input type='submit' value='Post' class='btn btn-primary'></input>
+                  </form>
                 </td>
-                <td></td>
-                <td></td>
-                <td>
-                  <button id="postCommentBtn">Post</button>
-                </td>
-              </tr> -->
+              </tr>
             </table>
           </div>
         </div>
       </div>
     </section>
-    <!-- <section id="body">
-      <div class="card">
-        <div class="card-body">
-          List all issues
-        </div>
-      </div>
-    </section> -->
-    <!-- <form id="nameForm" action="/addUser" method="post">
-        <label for="name">Name: </label>
-        <input id="nameField" type="text" name="name" />
-        <label for="age">Age: </label>
-        <input
-          id="ageField"
-          type="number"
-          name="age"
-          min="0"
-          max="100"
-          step="1"
-        />
-        <input type="submit" value="Add User" />
-      </form>
-      <form id="userForm" action="/getUsers" method="get">
-        <select id="urlField">
-          <option value="/getUsers">/getUsers</option>
-          <option value="/notReal">/notReal</option>
-        </select>
-        <select id="methodSelect">
-          <option value="get">GET</option>
-          <option value="head">HEAD</option>
-        </select>
-        <input type="submit" value="Get User" />
-      </form> -->
     <section id="content"></section>
   </body>
 </html>

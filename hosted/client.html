@@ -40,7 +40,7 @@
                 .appendTo("#issue-table");
               $("<td>")
                 .appendTo("#row-" + i)
-                .attr("class", "first-col")
+                .attr("id", "first-col")
                 .text(item.issue);
               $("<td>")
                 .appendTo("#row-" + i)
@@ -51,7 +51,7 @@
               $("<td>")
                 .appendTo("#row-" + i)
                 .attr("id", "replyBtn" + i)
-                .html("<input type='button' value='Reply'></input>");
+                .html("<input type='button' class='btn btn-secondary' value='Reply'></input>");
               Message = obj;
               
               //get the reply btn and add the click function to it
@@ -235,7 +235,7 @@
       <div class="card">
         <div class="card-body">
           <form id="addIssueForm" action="/addIssue" method="post">
-            <input type="submit" value="Add Issue" class="btn btn-primary" />
+            <input type="submit" value="Add Issue" class="btn btn-success" />
             <label for="issue">Issue: </label>
             <input id="issueField" type="text" name="issue" />
             <label for="name">Name: </label>
@@ -249,17 +249,18 @@
               cellspacing="0"
               cellpadding="0"
             >
-              <tr id="first-col">
-                <th>Issue</th>
+              <tr>
+                <th id="first-col">Issue</th>
                 <th>Author</th>
                 <th>ID</th>
+                <th></th>
               </tr>
               <tr>
-                <td>Bootstrp Style overwritting my own style</td>
+                <td id="first-col">Bootstrp Style overwritting my own style</td>
                 <td>Luke Schwarting</td>
                 <td>LGS123</td>
                 <td>
-                  <input type="button" id="replyBtn1" value="Reply"></input>
+                  <input type="button" id="replyBtn1" class='btn btn-secondary' value="Reply"></input>
                 </td>
               </tr>
             </table>

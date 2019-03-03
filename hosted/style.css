@@ -46,6 +46,10 @@ section {
 .table th {
   text-transform: uppercase;
   text-align: center;
+  background-color: #003366;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  color: white;
 }
 
 .table #first-col {
@@ -54,6 +58,18 @@ section {
 
 .table .full-width-row {
   width: 100%;
+}
+
+.table tr:hover {
+  background-color: #ddd;
+}
+
+.table #first-td {
+  text-align: left;
+  max-width: 450px;
+}
+
+#comments-table {
 }
 
 #comments-table th,

@@ -26,12 +26,14 @@
           //if set to application/json === true if text/xml === false
           obj = JSON.parse(xhr.response);
           console.dir(obj);
-          // if (obj.message) {
-          //   Message = `Message: ${obj.message}`;
-          // } else {
+          if (obj.message) {
+            Message = `Message: ${obj.message}`;
+          } else {
             //Message = `${JSON.stringify(obj.issues)}`;
+            //remove the data in the tabel
             $("#issue-table tr.api").remove();
 
+            //add the new data to the table
             console.log("each");
             console.log(obj);
             $.each(obj.issues, function(i, item) {
@@ -53,18 +55,22 @@
                 .text(item.id);
               $("<td>")
                 .appendTo("#row-" + i)
-                .attr("id", "replyBtn")
-                .html("<input onclick='replyBtnPress("+item.id+")' type='button' id='replyBtn' class="+item.id+" value='Reply'></input>");
+                .attr("id", "replyBtn" + i)
+                .html("<input type='button' value='Reply'></input>");
               Message = obj;
+              
+              //get the reply btn and add the click function to it
+              const btn = document.querySelector("#replyBtn" + i);
+              const sendToNewPage = () => replyBtnPress(item.id);
+              btn.addEventListener("click", sendToNewPage);
             });
-          //}
+          }
         } else {
           //head
           console.log("recieved");
         }
 
         //if method is post\
-
         if (obj) {
           if (obj.shouldReload === "true") {
             switch (xhr.status) {
@@ -133,7 +139,7 @@
         }
       };
 
-      const requestGETHEADUpdate = (sentFromEvent) => {
+      const requestGETHEADUpdate = (e, sentFromEvent) => {
         //check if userForm.id is equal to userForm or nameForm for setting correct values
 
         const url = "/getIssues"; //userForm.querySelector("#urlField").value;
@@ -153,7 +159,7 @@
         xhr.send();
 
         if (sentFromEvent) {
-          //e.preventDefault();
+          e.preventDefault();
         }
         return false;
       };
@@ -222,7 +228,7 @@
         //add event listener
         addIssueForm.addEventListener("submit", addIssues);
 
-        $('#replyBtn').click(function(){
+        $('#replyBtn1').click(function(){
           replyBtnPress(123);
         });
 
@@ -274,7 +280,7 @@
                 <td>Luke Schwarting</td>
                 <td>LALALALA</td>
                 <td>
-                  <input onclick="replyBtnPress()" type="button" id="replyBtn" value="Reply"></input>
+                  <input type="button" id="replyBtn1" value="Reply"></input>
                 </td>
               </tr>
               <!-- <tr id="comment">

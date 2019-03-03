@@ -44,7 +44,7 @@
                   .appendTo("#row-" + i)
                   .attr("class", "first-col")
                   .text(item);
-                
+
                 //up the index count;
                 index = i + 1;
               });
@@ -58,7 +58,7 @@
                 .html(
                   "<form id='addCommentForm' action='/addComment' method='post'> <label for='comment'>Comment: </label><input id='commentField' type='text' name='comment' /> <input type='submit' value='Post' class='btn btn-primary'></input></form>"
                 );
-              
+
               //grab form
               const addCommentForm = document.querySelector("#addCommentForm");
               //function to handle our request
@@ -66,7 +66,7 @@
               //add event listener
               addCommentForm.addEventListener("submit", addComments);
             } else {
-              Message = 'Message: couldnt find that issue';
+              Message = "Message: couldnt find that issue";
               console.log("couldnt find that issue");
             }
           }
@@ -206,7 +206,7 @@
         //get window url and get the params id
         const getIdFromUrl = location.search.split("=")[1];
         issueIdFromUrl = getIdFromUrl;
-        if(getIdFromUrl === 'LGS123'){
+        if (getIdFromUrl === "LGS123") {
           $.each($(".comment1"), function(i, item) {
             $(".comment1").show();
           });
@@ -216,7 +216,7 @@
           const addComments = e => requestPOSTUpdate(e, addCommentForm);
           //add event listener
           addCommentForm.addEventListener("submit", addComments);
-        } else{
+        } else {
           //pass that id into the get to get the specific issue back
           requestGETHEADUpdate();
         }
@@ -241,7 +241,7 @@
               <tr id="first-col">
                 <th>Issue</th>
               </tr>
-              <tr class="comment1">
+              <!-- <tr class="comment1">
                 <td>Bootstrp Style overwritting my own style</td>
               </tr>
               <tr class="comment1">
@@ -258,7 +258,7 @@
                     <input type='submit' value='Post' class='btn btn-primary'></input>
                   </form>
                 </td>
-              </tr>
+              </tr> -->
             </table>
           </div>
         </div>

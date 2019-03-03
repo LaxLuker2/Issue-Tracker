@@ -26,23 +26,16 @@
         if (xhr.response) {
           //if set to application/json === true if text/xml === false
           obj = JSON.parse(xhr.response);
-          console.log("hello");
-          console.dir(obj);
           if (obj.message) {
             Message = `Message: ${obj.message}`;
           } else {
             //check if there is a issue with that id from the URL
             if (obj.issues[issueIdFromUrl]) {
-              //Message = `${JSON.stringify(obj.issues)}`;
+              //remove table data
               $("#comments-table tr.api").remove();
 
-              console.log("each");
-              console.log(obj.issues[issueIdFromUrl].comments);
+              //add data to the table
               $.each(obj.issues[issueIdFromUrl].comments, function(i, item) {
-                //   console.log("each");
-                //   console.log(item);
-                //   console.log("each i");
-                //   console.log(i);
                 $("<tr>")
                   .attr("id", "row-" + i)
                   .attr("class", "api")
@@ -51,13 +44,11 @@
                   .appendTo("#row-" + i)
                   .attr("class", "first-col")
                   .text(item);
-                //   $("<td>")
-                //     .appendTo("#row-" + i)
-                //     .attr("id", "comment-" + i)
-                //     .html("<textarea name='' cols='45' rows='3'></textarea>");
-                //Message = json;
+                
+                //up the index count;
                 index = i + 1;
               });
+              //add the comment form to the table
               $("<tr>")
                 .attr("id", "comment-" + index)
                 .attr("class", "api")
@@ -75,6 +66,7 @@
               //add event listener
               addCommentForm.addEventListener("submit", addComments);
             } else {
+              Message = 'Message: couldnt find that issue';
               console.log("couldnt find that issue");
             }
           }
@@ -100,15 +92,9 @@
         switch (xhr.status) {
           case 200:
             status = 200;
-            content.innerHTML = `<b>Success</b>`;
-            content.innerHTML += `<br>`;
-            content.innerHTML += `<p>${Message}</p>`;
             break;
           case 201:
             status = 201;
-            content.innerHTML = `<b>Create</b>`;
-            content.innerHTML += `<br>`;
-            content.innerHTML += `<p>${Message}</p>`;
             break;
           case 204:
             status = 204;
@@ -153,10 +139,10 @@
       };
 
       const requestGETHEADUpdate = () => {
-        const url = "/getIssues"; //userForm.querySelector("#urlField").value;
-        const method = "get"; //userForm.querySelector("#methodSelect").value;
-
+        const url = "/getIssues";
+        const method = "get";
         const xhr = new XMLHttpRequest();
+
         xhr.open(method, url);
 
         xhr.setRequestHeader("Accept", "application/json");
@@ -178,9 +164,6 @@
         //and method (HTTP method - POST in this case)
         const nameAction = addCommentForm.getAttribute("action");
         const nameMethod = addCommentForm.getAttribute("method");
-
-        console.log(nameAction);
-        console.log(nameMethod);
 
         //grab the form's name and age fields so we can check user input
         const commentField = addCommentForm.querySelector("#commentField");
@@ -207,12 +190,6 @@
         //build our x-www-form-urlencoded format. Without ajax the
         //browser would do this automatically but it forcefully changes pages
         //which we don't want.
-        //The format is the same as query strings, so key=value&key2=value2
-        //The 'name' fields from the inputs are the variable names sent to
-        //the server.
-        //So ours might look like  name=test&age=22
-        //Again the 'name' fields in the form are the variable names in the string
-        //and the variable names the server will look for.
         const formData = `comment=${commentField.value}&id=${issueIdFromUrl}`;
 
         //send our request with the data

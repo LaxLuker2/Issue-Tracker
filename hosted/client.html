@@ -33,11 +33,7 @@
             $("#issue-table tr.api").remove();
 
             //add the new data to the table
-            console.log("each");
-            console.log(obj);
             $.each(obj.issues, function(i, item) {
-              console.log("each");
-              console.log(item);
               $("<tr>")
                 .attr("id", "row-" + i)
                 .attr("class", "api")
@@ -133,10 +129,8 @@
       };
 
       const requestGETHEADUpdate = (e, sentFromEvent) => {
-        //check if userForm.id is equal to userForm or nameForm for setting correct values
-
-        const url = "/getIssues"; //userForm.querySelector("#urlField").value;
-        const method = "get"; //userForm.querySelector("#methodSelect").value;
+        const url = "/getIssues";
+        const method = "get";
 
         const xhr = new XMLHttpRequest();
         xhr.open(method, url);

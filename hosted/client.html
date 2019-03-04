@@ -90,7 +90,10 @@
             break;
           case 204:
             status = 204;
-            content.innerHTML = `<b>Updated (No Content)</b>`;
+            //content.innerHTML = `<b>Updated (No Content)</b>`;
+            console.dir('updated');
+            //update the table with the new data
+            requestGETHEADUpdate(false);
             break;
           case 400:
             status = 400;
